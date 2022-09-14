@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BookRequest;
+use App\Http\Requests\UpdateBookRequest;
 use App\Models\BooksModel;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Str;
-use stdClass;
 
 class BookController extends Controller
 {
@@ -33,18 +33,8 @@ class BookController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(BookRequest $request)
     {
-        $request->validate([
-            'name'            => 'required',
-            'isbn'            => 'required',
-            'authors'         => 'required',
-            'country'         => 'required',
-            'number_of_pages' => 'required|numeric',
-            'publisher'       => 'required',
-            'release_date'    => 'required|date'
-        ]);
-
         $authors = Str::of($request->authors)->explode(',');
 
         $book                  = new BooksModel;
@@ -97,7 +87,7 @@ class BookController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(UpdateBookRequest $request, $id)
     {
         $book = BooksModel::find($id);
 
@@ -108,25 +98,15 @@ class BookController extends Controller
             ], 404);
         }
 
-        $request->validate([
-            'name'            => 'nullable',
-            'isbn'            => 'nullable',
-            'authors'         => 'nullable',
-            'country'         => 'nullable',
-            'number_of_pages' => 'nullable',
-            'publisher'       => 'nullable',
-            'release_date'    => 'nullable'
-        ]);
-
         $authors = Str::of($request->authors)->explode(',');
 
-        $book->name = $request->filled('name') ? $request->name: $book->name;
-        $book->isbn = $request->filled('isbn') ? $request->isbn: $book->isbn;
-        $book->authors = $request->filled('authors') ? $authors: $book->authors;
-        $book->country = $request->filled('country') ? $request->country: $book->country;
+        $book->name            = $request->filled('name') ? $request->name: $book->name;
+        $book->isbn            = $request->filled('isbn') ? $request->isbn: $book->isbn;
+        $book->authors         = $request->filled('authors') ? $authors: $book->authors;
+        $book->country         = $request->filled('country') ? $request->country: $book->country;
         $book->number_of_pages = $request->filled('number_of_pages') ? $request->number_of_pages: $book->number_of_pages;
-        $book->publisher = $request->filled('publisher') ? $request->publisher: $book->publisher;
-        $book->release_date = $request->filled('release_date') ? $request->release_date: $book->release_date;
+        $book->publisher       = $request->filled('publisher') ? $request->publisher: $book->publisher;
+        $book->release_date    = $request->filled('release_date') ? $request->release_date: $book->release_date;
         $book->save();
 
         return response()->json([

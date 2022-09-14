@@ -37,7 +37,7 @@ php artisan key:generate
 # Start the app
 php artisan serve
 
-# Run tests
+# Run tests (Please make sure you have internet connection when running tests to fetch external books)
 php artisan test
 ```
 
