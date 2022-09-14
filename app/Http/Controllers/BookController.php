@@ -76,6 +76,13 @@ class BookController extends Controller
     {
         $book = BooksModel::find($id);
 
+        if (!isset($book)) {
+            return response()->json([
+                'status_code' => 404,
+                'message'     => 'Book not found'
+            ], 404);
+        }
+
         return response()->json([
             'status_code' => 200,
             'status'      => 'success',
@@ -92,6 +99,15 @@ class BookController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $book = BooksModel::find($id);
+
+        if (!isset($book)) {
+            return response()->json([
+                'status_code' => 404,
+                'message'     => 'Book not found'
+            ], 404);
+        }
+
         $request->validate([
             'name'            => 'nullable',
             'isbn'            => 'nullable',
@@ -104,7 +120,6 @@ class BookController extends Controller
 
         $authors = Str::of($request->authors)->explode(',');
 
-        $book = BooksModel::find($id);
         $book->name = $request->filled('name') ? $request->name: $book->name;
         $book->isbn = $request->filled('isbn') ? $request->isbn: $book->isbn;
         $book->authors = $request->filled('authors') ? $authors: $book->authors;
@@ -130,7 +145,15 @@ class BookController extends Controller
      */
     public function destroy($id)
     {
-        $book       = BooksModel::find($id);
+        $book = BooksModel::find($id);
+
+        if(!isset($book)) {
+            return response()->json([
+                'status_code' => 404,
+                'message'     => 'Book not found'
+            ], 404);
+        }
+
         $book_title = $book->name;
 
         $book->delete();
@@ -139,6 +162,7 @@ class BookController extends Controller
             'status_code' => 204,
             'status'      => 'success',
             'message'     => 'The book '.$book_title.' was deleted successfully',
+            'data'        => []
         ], 200);
     }
 
