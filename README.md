@@ -34,6 +34,9 @@ composer install
 # Generate application secure key (in .env file)
 php artisan key:generate
 
+# Migrate the database
+php artisan migrate
+
 # Start the app
 php artisan serve
 
